@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FoundationProject</string>
+    <string name="progress_indicator_desccription">Loading please wait</string>
+</resources>
