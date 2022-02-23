@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -37,7 +37,7 @@ import miguel.project.foundation.ui.viewmodel.MainViewModel
 fun MainScreen(
     mainStateMachine: MainStateMachine,
     viewModel: MainViewModel,
-    navigateToDashBoard: (() -> Unit)? = null
+    navigateToDashBoard: ((index: Int) -> Unit)? = null
 ) {
     LaunchedEffect(Unit) {
         mainStateMachine.init()
@@ -49,7 +49,7 @@ fun MainScreen(
 
 
 @Composable
-fun MainContent(state: StatesMain, navigateToDashBoard: (() -> Unit)? = null) {
+fun MainContent(state: StatesMain, navigateToDashBoard: ((index: Int) -> Unit)? = null) {
     when (state) {
         is GettingPostState -> {
             LoadingView()
@@ -62,17 +62,19 @@ fun MainContent(state: StatesMain, navigateToDashBoard: (() -> Unit)? = null) {
 }
 
 @Composable
-fun PostListView(postList: List<Post>, navigateToDashBoard: (() -> Unit)? = null) {
+fun PostListView(postList: List<Post>, navigateToDashBoard: ((index: Int) -> Unit)? = null) {
 
     val smallPadding = dimensionResource(R.dimen.padding_small)
     val smallHeight = dimensionResource(R.dimen.height_small)
 
     LazyColumn {
-        items(postList) { post ->
+        itemsIndexed(postList) { index, post ->
             CardView(
                 modifier = Modifier
                     .padding(top = smallPadding, start = smallPadding, end = smallPadding),
-                onClick = navigateToDashBoard
+                onClick = {
+                    navigateToDashBoard?.invoke(index)
+                }
             ) {
                 Column {
                     Text(

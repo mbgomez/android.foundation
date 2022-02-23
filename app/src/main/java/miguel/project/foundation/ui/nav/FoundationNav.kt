@@ -5,9 +5,11 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import miguel.project.foundation.ui.nav.MainDestinations.DETAIL_ROUTE
 import miguel.project.foundation.ui.nav.MainDestinations.MAIN_ROUTE
 import miguel.project.foundation.ui.screen.DetailScreen
@@ -35,18 +37,22 @@ fun FoundationNavGraph(
             MainScreen(
                 get(),
                 get(),
-                actions.navigateToDashBoard
+                actions.navigateToDetails
             )
         }
 
-        composable(route = DETAIL_ROUTE) {
-            DetailScreen(get(), get())
+        composable(
+            route = "$DETAIL_ROUTE/{index}",
+            arguments = listOf(navArgument("index") { type = NavType.IntType })
+        ){ backStackEntry ->
+            val index = backStackEntry.arguments?.getInt("index") ?: 0
+            DetailScreen(get(), get(), index)
         }
     }
 }
 
 class MainActions(navController: NavHostController) {
-    val navigateToDashBoard: () -> Unit = {
-        navController.navigate(DETAIL_ROUTE)
+    val navigateToDetails: (index:Int) -> Unit = {
+        navController.navigate("$DETAIL_ROUTE/$it")
     }
 }
